@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -39,6 +38,9 @@ public class Tester {
 						value = cell.toString();
 						break;
 					case Cell.CELL_TYPE_NUMERIC :
+						System.out.println();
+						System.out.println(cell.getCellStyle().getDataFormatString()); 
+						System.out.println();
                         if(DateUtil.isCellDateFormatted(cell))
                         	value = cell.getDateCellValue().toString();
                         else
