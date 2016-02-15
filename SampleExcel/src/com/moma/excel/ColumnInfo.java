@@ -43,7 +43,7 @@ public class ColumnInfo {
 				queryValue = "STR_TO_DATE('" + value + "', '%m/%d/%Y')";
 			break;
 		case TYPE_STRING:
-			value = value.replace("\\", "\\\\");
+			value = value.replace("\\", "\\\\").replace("'", "\\'");
 			queryValue = "'" + value + "'"; 
 			break;
 		}

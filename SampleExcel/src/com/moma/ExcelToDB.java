@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.BatchUpdateException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
@@ -15,9 +16,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.moma.db.DBInsert;
 import com.moma.excel.ActualSheetInfo;
+import com.moma.excel.ClearDBSheetInfo;
 import com.moma.excel.ColumnInfo;
 import com.moma.excel.EnforcementSheetInfo;
 import com.moma.excel.LeadSheetInfo;
+import com.moma.excel.SAPSheetInfo;
+import com.moma.excel.SAPSheetInfoLD;
 import com.moma.excel.SheetInfo;
 
 public class ExcelToDB {
@@ -28,7 +32,10 @@ public class ExcelToDB {
 		String pw = "2417bgbg";                                                // 사용자 계정의 패스워드
 		String driver = "com.mysql.jdbc.Driver"; 
 
-		String excelFilePath = "e:\\test\\FY16_Q4_LC Billings Korea_Template_daon.xlsx";
+//		String excelFilePath = "e:\\test\\FY16_Q4_LC Billings Korea_Template_daon.xlsx";
+//		String excelFilePath = "e:\\test\\FY14 to FY16 SAP orders_0201_참고용.xlsx";
+//		String excelFilePath = "e:\\test\\Q3FY16 SAP Orders_1023.xlsx";
+		String excelFilePath = "e:\\test\\CLEAR 20160201.xlsx";
 		
 		ExcelToDB etb = new ExcelToDB();
 		etb.setExcelFilePath(excelFilePath);
@@ -36,7 +43,10 @@ public class ExcelToDB {
 		
 //		etb.execute(new ActualSheetInfo());
 //		etb.execute(new LeadSheetInfo());
-		etb.execute(new EnforcementSheetInfo());
+//		etb.execute(new EnforcementSheetInfo());
+//		etb.execute(new SAPSheetInfo());
+//		etb.execute(new SAPSheetInfoLD());
+		etb.execute(new ClearDBSheetInfo());
 	}
 
 
@@ -62,7 +72,6 @@ public class ExcelToDB {
 		db.beginTransaction();
 		
 		walk(excelFilePath, sheetInfo, db);
-		
 		db.executeBatch();
 		
 		String[] afterUpdateQuery = sheetInfo.getUpdateQuery();
@@ -88,6 +97,7 @@ public class ExcelToDB {
 		
 		startTime = System.currentTimeMillis();
 		int i = 0;
+		int count = 0;
 		for(Row row : sheet) {
 			if( i == 0) {
 				i++;
@@ -112,11 +122,12 @@ public class ExcelToDB {
 				continue;
 
 			db.executeBatchInsert(sheetInfo.getTableName(), columnInfo);
+			count++;
 			
 		}
 		
 		endTime = System.currentTimeMillis();
-		System.out.println("all loop = " + (endTime - startTime));
+		System.out.println("all loop (" + count + ") = " + (endTime - startTime) + "mesc");
 
 		wb.close();
 	}
