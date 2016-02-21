@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com/moma/db/mapper.xml">
+	<select id="selectActualByQuarter" resultType="Actual"> 
+		select * from actual where quarter like CONCAT(#{quarter}, '%') order by po, sn
+	</select>
+	<select id="selectClearDBBySN" resultType="ClearDB"> 
+		select * from cleardb where serialnumber = #{sn} 
+	</select>
+	<select id="selectSapDBByPO" resultType="SapDB"> 
+		select * from sapdb where sapordernumber = #{po} order by sapordernumber 
+	</select>
+	<select id="selectProductMapAll" resultType="ProductMap"> 
+		select * from productmap
+	</select>
+	
+</mapper>

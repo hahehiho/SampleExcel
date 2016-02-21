@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.BatchUpdateException;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -14,7 +15,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.moma.db.DBInsert;
+import com.moma.db.QueryExecutor;
 import com.moma.excel.ActualSheetInfo;
 import com.moma.excel.ClearDBSheetInfo;
 import com.moma.excel.ColumnInfo;
@@ -32,10 +33,12 @@ public class ExcelToDB {
 		String pw = "2417bgbg";                                                // 사용자 계정의 패스워드
 		String driver = "com.mysql.jdbc.Driver"; 
 
-//		String excelFilePath = "e:\\test\\FY16_Q4_LC Billings Korea_Template_daon.xlsx";
-//		String excelFilePath = "e:\\test\\FY14 to FY16 SAP orders_0201_참고용.xlsx";
+//		String excelFilePath = "e:\\test\\FY17_Q1_LC Billings Korea_Template_daon.xlsx";
+		String excelFilePath = "e:\\test\\FY14 to FY17 SAP orders_0219_참고용.xlsx";
 //		String excelFilePath = "e:\\test\\Q3FY16 SAP Orders_1023.xlsx";
-		String excelFilePath = "e:\\test\\CLEAR 20160201.xlsx";
+//		String excelFilePath = "e:\\test\\CLEAR 20160201.xlsx";
+//		String excelFilePath = "e:\\test\\ADSK_Actual_FromFY15_FY17.xlsx";
+//		String excelFilePath = "e:\\test\\SAP20160219.xlsx";
 		
 		ExcelToDB etb = new ExcelToDB();
 		etb.setExcelFilePath(excelFilePath);
@@ -44,9 +47,10 @@ public class ExcelToDB {
 //		etb.execute(new ActualSheetInfo());
 //		etb.execute(new LeadSheetInfo());
 //		etb.execute(new EnforcementSheetInfo());
-//		etb.execute(new SAPSheetInfo());
+		etb.execute(new SAPSheetInfo());
 //		etb.execute(new SAPSheetInfoLD());
-		etb.execute(new ClearDBSheetInfo());
+//		etb.execute(new ClearDBSheetInfo());
+		
 	}
 
 
@@ -68,7 +72,7 @@ public class ExcelToDB {
 	}
 
 	private void execute(SheetInfo sheetInfo) throws ClassNotFoundException, SQLException, FileNotFoundException, IOException {
-		DBInsert db = new DBInsert(url, id, pw, driver);
+		QueryExecutor db = new QueryExecutor(url, id, pw, driver);
 		db.beginTransaction();
 		
 		walk(excelFilePath, sheetInfo, db);
@@ -84,7 +88,7 @@ public class ExcelToDB {
 		
 	}
 
-	private void walk(String excelFilePath, SheetInfo sheetInfo, DBInsert db) throws FileNotFoundException, IOException, SQLException {
+	private void walk(String excelFilePath, SheetInfo sheetInfo, QueryExecutor db) throws FileNotFoundException, IOException, SQLException {
 		File file = new File(excelFilePath);
 		
 		long startTime = System.currentTimeMillis();
@@ -145,8 +149,11 @@ public class ExcelToDB {
                 if(DateUtil.isCellDateFormatted(cell) ||  cell.getCellStyle().getDataFormatString().equals("mm\"월\"\\ dd\"일\"")) {
                 	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                     value = sdf.format(cell.getDateCellValue());
-                } else
-                    value = Integer.toString((int)cell.getNumericCellValue());
+                } else {                
+                	NumberFormat f = NumberFormat.getInstance();
+                	f.setGroupingUsed(false);
+                    value = f.format(cell.getNumericCellValue());
+                }
                 break;
 			case Cell.CELL_TYPE_BOOLEAN :
                 value = "" + cell.getBooleanCellValue();

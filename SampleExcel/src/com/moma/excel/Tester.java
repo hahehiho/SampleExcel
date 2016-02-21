@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.NumberFormat;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -14,7 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class Tester {
 
 	public static void main(String[] args) {
-		File file = new File("e:\\test\\FY16_Q4_LC Billings Korea_Template_daon.xlsx");
+		File file = new File("e:\\test\\CLEAR 20160201.xlsx");
 		XSSFWorkbook wb = null;
 		
 		try {//엑셀 파일 오픈
@@ -25,8 +26,9 @@ public class Tester {
 			e.printStackTrace();
 		}
 		
-		XSSFSheet sheet = wb.getSheet("Actual");
+		XSSFSheet sheet = wb.getSheetAt(0);
 		
+		int rowcount = 0;
 		for(Row row : sheet) {
 			int i = 0;
 			boolean isPrint = false;
@@ -38,13 +40,14 @@ public class Tester {
 						value = cell.toString();
 						break;
 					case Cell.CELL_TYPE_NUMERIC :
-						System.out.println();
-						System.out.println(cell.getCellStyle().getDataFormatString()); 
-						System.out.println();
                         if(DateUtil.isCellDateFormatted(cell))
                         	value = cell.getDateCellValue().toString();
-                        else
-                            value = Integer.toString((int)cell.getNumericCellValue());
+                        else {
+                        	NumberFormat f = NumberFormat.getInstance();
+                        	f.setGroupingUsed(false);
+                        
+                            value = f.format(cell.getNumericCellValue());
+                        }
                         break;
 					case Cell.CELL_TYPE_BOOLEAN :
                         value = "" + cell.getBooleanCellValue();
@@ -72,6 +75,9 @@ public class Tester {
 			}
 			if(isPrint)
 				System.out.println();
+			rowcount++;
+			if(rowcount == 3)
+				break;
 		}
 	}
 

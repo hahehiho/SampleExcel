@@ -2,7 +2,7 @@ package com.moma.excel;
 
 public class SAPSheetInfo extends SheetInfo {
 	public SAPSheetInfo() {
-		super("FY14 to FY16Q4 SAP orders", "sapdb");		
+		super("FY14 to FY17Q1 SAP orders", "sapdb");		
 		updateQuery = new String[]{
 		};
 	}
