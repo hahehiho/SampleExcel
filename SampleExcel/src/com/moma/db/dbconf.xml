@@ -7,6 +7,8 @@
 		<typeAlias alias="ClearDB" type="com.moma.dbo.ClearDBDO" />
 		<typeAlias alias="SapDB" type="com.moma.dbo.SapDBDO" />
 		<typeAlias alias="ProductMap" type="com.moma.dbo.ProductMapDO" />
+		<typeAlias alias="LeadTarget" type="com.moma.dbo.LeadTargetDO" />
+		<typeAlias alias="EnforcementTarget" type="com.moma.dbo.EnforcementTargetDO" />
 	</typeAliases>
 	<environments default="development">
 		<environment id="development">

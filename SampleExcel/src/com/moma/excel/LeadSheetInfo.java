@@ -15,7 +15,7 @@ public class LeadSheetInfo extends SheetInfo {
 				new ColumnInfo("C", "sentdate", ColumnInfo.TYPE_DATE),
 				new ColumnInfo("D", "companyname", ColumnInfo.TYPE_STRING),
 				new ColumnInfo("E", "companyname_en", ColumnInfo.TYPE_STRING),
-				new ColumnInfo("F", "city", ColumnInfo.TYPE_STRING),
+				new ColumnInfo("F", "lead_city", ColumnInfo.TYPE_STRING),
 				new ColumnInfo("G", "address", ColumnInfo.TYPE_STRING),
 				new ColumnInfo("H", "partner", ColumnInfo.TYPE_STRING),
 				new ColumnInfo("I", "leadsourcename", ColumnInfo.TYPE_STRING),

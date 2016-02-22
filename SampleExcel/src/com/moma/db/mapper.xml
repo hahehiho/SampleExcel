@@ -12,5 +12,23 @@
 	<select id="selectProductMapAll" resultType="ProductMap"> 
 		select * from productmap
 	</select>
-	
+	<select id="selectLeadTargetAll" resultType="LeadTarget">
+		SELECT * FROM adsk.lead_target_base a LEFT JOIN adsk.lead b ON
+		(a.enduseraccountname like CONCAT('%', b.companyname,'%') OR
+		b.companyname like CONCAT('%',a.enduseraccountname ,'%'))
+        WHERE
+		(
+		(b.sentdate IS NOT NULL AND ((DATEDIFF(a.assetregdate,b.sentdate) BETWEEN 0 AND 180) OR (DATEDIFF(a.saptransdate,b.sentdate) BETWEEN 0 AND 180))) OR
+		(b.sentdate IS NULL AND ((DATEDIFF(a.assetregdate,b.requesteddate) BETWEEN 0 AND 180) OR (DATEDIFF(a.saptransdate,b.requesteddate) BETWEEN 0 AND 180)))
+		) order by a.enduseraccountname
+	</select>
+	<select id="selectEnforcementTargetAll" resultType="EnforcementTarget">
+		SELECT * FROM adsk.lead_target_base a LEFT JOIN adsk.enforcement b ON
+		(a.enduseraccountname like CONCAT('%', b.companyname,'%') OR
+		b.companyname like CONCAT('%',a.enduseraccountname ,'%'))
+        WHERE
+        (b.enforcementdate IS NOT NULL AND ((DATEDIFF(a.assetregdate,b.enforcementdate) BETWEEN 0 AND 180))) OR
+        (b.enforcementdate IS NULL AND b.agreementdate IS NOT NULL AND ((DATEDIFF(a.assetregdate,b.agreementdate) BETWEEN 0 AND 180))) 
+        order by a.enduseraccountname
+	</select>
 </mapper>

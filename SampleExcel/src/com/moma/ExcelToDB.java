@@ -10,7 +10,9 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -34,11 +36,12 @@ public class ExcelToDB {
 		String driver = "com.mysql.jdbc.Driver"; 
 
 //		String excelFilePath = "e:\\test\\FY17_Q1_LC Billings Korea_Template_daon.xlsx";
-		String excelFilePath = "e:\\test\\FY14 to FY17 SAP orders_0219_참고용.xlsx";
+//		String excelFilePath = "e:\\test\\FY14 to FY17 SAP orders_0219_참고용.xlsx";
 //		String excelFilePath = "e:\\test\\Q3FY16 SAP Orders_1023.xlsx";
 //		String excelFilePath = "e:\\test\\CLEAR 20160201.xlsx";
 //		String excelFilePath = "e:\\test\\ADSK_Actual_FromFY15_FY17.xlsx";
 //		String excelFilePath = "e:\\test\\SAP20160219.xlsx";
+		String excelFilePath = "e:\\test\\FY15 LC Billing Templates_v7_새빛_Template_20160219_REVIEWED_v2.xlsx";
 		
 		ExcelToDB etb = new ExcelToDB();
 		etb.setExcelFilePath(excelFilePath);
@@ -46,8 +49,8 @@ public class ExcelToDB {
 		
 //		etb.execute(new ActualSheetInfo());
 //		etb.execute(new LeadSheetInfo());
-//		etb.execute(new EnforcementSheetInfo());
-		etb.execute(new SAPSheetInfo());
+		etb.execute(new EnforcementSheetInfo());
+//		etb.execute(new SAPSheetInfo());
 //		etb.execute(new SAPSheetInfoLD());
 //		etb.execute(new ClearDBSheetInfo());
 		
@@ -99,6 +102,9 @@ public class ExcelToDB {
 		XSSFSheet sheet = wb.getSheet(sheetInfo.getSheetName());
 		ColumnInfo[] columnInfo = sheetInfo.getColumns();
 		
+		FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
+		
+		
 		startTime = System.currentTimeMillis();
 		int i = 0;
 		int count = 0;
@@ -112,7 +118,7 @@ public class ExcelToDB {
 			
 			for(int j = 0; j < columnInfo.length; j++) {
 				Cell cell = row.getCell(columnInfo[j].excelColumn);
-				String value = getValue(cell);
+				String value = getValue(cell, evaluator);
 				
 				if(j == 0 && (value == null || value.isEmpty())) {
 					isInsert = false;
@@ -136,7 +142,7 @@ public class ExcelToDB {
 		wb.close();
 	}
 
-	private String getValue(Cell cell) {
+	private String getValue(Cell cell, FormulaEvaluator evaluator) {
 		String value = null;
 		if(cell == null)
 			return "";
@@ -162,12 +168,35 @@ public class ExcelToDB {
 				value = cell.getCellFormula();
 				if(value.indexOf("VLOOKUP") >= 0 || value.indexOf("SUM") >= 0 || value.indexOf("IFERROR") >= 0)
 					value = "";
+				else {
+					CellValue evalCellValue = evaluator.evaluate(cell);
+					value = getValue(evalCellValue);
+				}
 				break;
 			default:
 				value = cell.toString();
 				break;
 		}
 		
+		return value;
+	}
+
+	private String getValue(CellValue cell) {
+		String value = "";
+		
+		switch( cell.getCellType()) {
+		case Cell.CELL_TYPE_STRING :
+			value = cell.getStringValue();
+			break;
+		case Cell.CELL_TYPE_NUMERIC :
+        	NumberFormat f = NumberFormat.getInstance();
+        	f.setGroupingUsed(false);
+            value = f.format(cell.getNumberValue());
+            break;
+		case Cell.CELL_TYPE_BOOLEAN :
+            value = "" + cell.getBooleanValue();
+            break;
+		}
 		return value;
 	}
 

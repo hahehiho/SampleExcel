@@ -17,7 +17,7 @@ public class EnforcementSheetInfo extends SheetInfo {
 				new ColumnInfo("E", "agreementdate", ColumnInfo.TYPE_DATE),
 				new ColumnInfo("F", "companyname", ColumnInfo.TYPE_STRING),
 				new ColumnInfo("G", "companyname_en", ColumnInfo.TYPE_STRING),
-				new ColumnInfo("H", "city", ColumnInfo.TYPE_STRING),
+				new ColumnInfo("H", "enforcement_city", ColumnInfo.TYPE_STRING),
 				new ColumnInfo("I", "address", ColumnInfo.TYPE_STRING),
 				new ColumnInfo("J", "partner", ColumnInfo.TYPE_STRING),
 				new ColumnInfo("K", "leadsourcename", ColumnInfo.TYPE_STRING),
